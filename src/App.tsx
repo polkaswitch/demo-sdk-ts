@@ -1,25 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
+import { AuthProvider } from './hooks/useAuth';
+import getLibrary from './hooks/getLibrary';
+import Home from './home';
+
+const NetworkContextName = 'NETWORK';
+const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ProviderNetwork getLibrary={getLibrary}>
+        <AuthProvider>
+          <Home />
+        </AuthProvider>
+      </Web3ProviderNetwork>
+    </Web3ReactProvider>
   );
 }
 
