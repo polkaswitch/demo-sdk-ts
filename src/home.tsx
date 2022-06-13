@@ -75,10 +75,19 @@ const Home = () => {
     }
 
     if (Number(fromChain?.chainId) !== Number(chainId)) {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${fromChain.chainId.toString(16)}` }],
-      });
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `0x${fromChain.chainId.toString(16)}` }],
+        });
+      } catch(e) {
+        console.log('Error switching chain:', e);
+        // await window.ethereum.request({
+        //   method: 'wallet_addEthereumChain',
+        //   params: [fromChain],
+        // });
+      }
+      return;
     }
 
     const tokenAmount = new BigNumber(amount).times(10 ** (fromToken.decimal || 0));
