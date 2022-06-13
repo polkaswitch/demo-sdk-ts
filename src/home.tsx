@@ -5,6 +5,7 @@ import TokenContainer, { TokenType } from "./components/Token";
 import useAuth from "./hooks/useAuth";
 import SwingSDK, { TransferParams } from "@swing.xyz/sdk";
 import BigNumber from "bignumber.js";
+import { ethers } from "ethers";
 
 declare var window: any;
 
@@ -88,9 +89,14 @@ const Home = () => {
       toUserAddress: account,
     };
 
-    console.log('Sending params...', transferParams);
-    await sdk.wallet.connect(window.ethereum);
-
+    if (window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await sdk.wallet.connect(provider);
+    } else {
+      alert("Provider is not available");
+      return;
+    }
+    
     console.log('Getting quote...');
     const quote = await sdk.getQuote(transferParams);
 
