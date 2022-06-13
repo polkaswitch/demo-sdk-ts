@@ -68,10 +68,17 @@ const Home = () => {
       console.log('Please connect to account');
       return connect();
     }
-    
+
     if (!fromChain || !toChain || !fromToken || !toToken || !amount) {
       console.log('Please check chain and tokens');
       return;
+    }
+
+    if (Number(fromChain?.chainId) !== Number(chainId)) {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${fromChain.chainId.toString(16)}` }],
+      });
     }
 
     const tokenAmount = new BigNumber(amount).times(10 ** (fromToken.decimal || 0));
