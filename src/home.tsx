@@ -132,13 +132,13 @@ const Home = () => {
         <div className="flex flex-row gap-4">
           <div className="w-1/2 flex flex-col gap-4">
             <p>From</p>
-            <ChainContainer data={chains} onChange={onChangeFromChain} />
-            <TokenContainer data={fromChain?.tokens} onChange={onChangeFromToken} />
+            <ChainContainer data={chains} onChange={onChangeFromChain} value={fromChain} />
+            <TokenContainer data={fromChain?.tokens} onChange={onChangeFromToken} value={fromToken} />
           </div>
           <div className="w-1/2 flex flex-col gap-4">
             <p>To</p>
-            <ChainContainer data={chains} onChange={onChangeToChain} />
-            <TokenContainer data={toChain?.tokens} onChange={onChangeToToken} />
+            <ChainContainer data={chains} onChange={onChangeToChain} value={toChain} />
+            <TokenContainer data={toChain?.tokens} onChange={onChangeToToken} value={toToken}/>
           </div>
         </div>
 
