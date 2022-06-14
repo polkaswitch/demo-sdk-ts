@@ -107,7 +107,7 @@ const Home = () => {
 
     if (window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await sdk.wallet.connect(provider);
+      sdk.wallet.connect(provider);
     } else {
       alert("Provider is not available");
       return;
