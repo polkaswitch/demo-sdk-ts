@@ -90,7 +90,7 @@ const Home = () => {
       return;
     }
 
-    const tokenAmount = new BigNumber(amount).times(10 ** (fromToken.decimal || 0));
+    // const tokenAmount = new BigNumber(amount).times(10 ** (fromToken.decimal || 0));
 
     const transferParams: TransferParams = {
       fromChain: fromChain.slug as any,
@@ -99,7 +99,7 @@ const Home = () => {
       fromToken: fromToken.symbol as any,
       toToken: toToken.symbol as any,
     
-      amount: tokenAmount.toString(),
+      amount: amount.toString(),
     
       fromUserAddress: account,
       toUserAddress: account,
