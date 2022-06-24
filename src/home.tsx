@@ -4,12 +4,34 @@ import InputContainer from "./components/Input";
 import TokenContainer, { TokenType } from "./components/Token";
 import useAuth from "./hooks/useAuth";
 import SwingSDK, { TransferParams } from "@swing.xyz/sdk";
-import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 
 declare var window: any;
 
-const sdk = new SwingSDK();
+const sdk = new SwingSDK({ debug: true });
+
+sdk.on('TRANSFER', (transfer) => {
+  switch (transfer.status) {
+    case 'PENDING':
+      console.log(`Creating a transaction for the ${transfer.step} step`);
+      break;
+    case 'CHAIN_SWITCH_REQUIRED':
+      // Handle switching chains or alert the user to do it manually
+      break;
+    case 'ACTION_REQUIRED':
+      console.log('Please complete the required action within your connected wallet');
+      break;
+    case 'CONFIRMING':
+      console.log(`Waiting for the transaction from the ${transfer.step} step to complete`);
+      break;
+    case 'SUCCESS':
+      console.log(`Transfer has completed the ${transfer.step} step`);
+      break;
+    case 'FAILED':
+      console.log(`Transfer failed at the ${transfer.step} step:`, transfer.error);
+      break;
+  }
+});
 
 const Home = () => {
   const { account, chainId, connect } = useAuth();
@@ -90,7 +112,25 @@ const Home = () => {
       return;
     }
 
-    // const tokenAmount = new BigNumber(amount).times(10 ** (fromToken.decimal || 0));
+    if (window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await sdk.wallet.connect(provider);
+    } else {
+      alert("Provider is not available");
+      return;
+    }
+    
+    // const transactions = await sdk.wallet.getTransactions();
+
+    // console.log('Tx list:', transactions);
+    // // Alert your user to take action on any transactions require a claim
+    // for (const tx of transactions) {
+    //   if (tx.status === 'Pending Destination Chain' && tx.needClaim) {
+    //     // This is only required if the user closes the browser before claiming their tokens during the transfer process
+    //     console.log('Claim Tx:', tx);
+    //     await sdk.claim(tx);
+    //   }
+    // }
 
     const transferParams: TransferParams = {
       fromChain: fromChain.slug as any,
@@ -105,19 +145,11 @@ const Home = () => {
       toUserAddress: account,
     };
 
-    if (window.ethereum !== 'undefined') {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      sdk.wallet.connect(provider);
-    } else {
-      alert("Provider is not available");
-      return;
-    }
-    
     console.log('Getting quote...');
     const quote = await sdk.getQuote(transferParams);
 
     console.log('Quote:', quote);
-    const transferRoute = quote.routes[0].route;
+    const transferRoute = quote.routes[2].route;
 
     console.log('Sending transfer...', transferRoute);
     await sdk.transfer(transferRoute, transferParams);
