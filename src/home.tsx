@@ -9,7 +9,6 @@ import { ethers } from "ethers";
 declare var window: any;
 
 const sdk = new SwingSDK({ debug: true });
-
 sdk.on('TRANSFER', (transfer) => {
   switch (transfer.status) {
     case 'PENDING':
@@ -120,10 +119,12 @@ const Home = () => {
       return;
     }
     
-    // const transactions = await sdk.wallet.getTransactions();
+    // console.log('api:', sdk.api); return;
 
-    // console.log('Tx list:', transactions);
-    // // Alert your user to take action on any transactions require a claim
+    const transactions = await sdk.wallet.getTransactions();
+
+    console.log('Tx list:', transactions);
+    // Alert your user to take action on any transactions require a claim
     // for (const tx of transactions) {
     //   if (tx.status === 'Pending Destination Chain' && tx.needClaim) {
     //     // This is only required if the user closes the browser before claiming their tokens during the transfer process
